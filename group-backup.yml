@@ -5,3 +5,6 @@
   register: group_backup
 
 - name: Save group info to backup server
+  ansible.builtin.copy:
+    content: "{{ group_backup.stdout }}"
+    dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group"

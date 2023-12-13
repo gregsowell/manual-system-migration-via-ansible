@@ -11,13 +11,13 @@
   tasks:
   - name: Create backup directory on backup server
     ansible.builtin.file:
-      path: "{{ backup_location }}"
+      path: "{{ backup_location }}/{{ inventory_hostname }}"
       state: directory
-      mode: '0755'
+      mode: '0733'
     delegate_to: "{{ backup_storage }}"
 
   - name: Backup groups
     ansible.builtin.include_tasks:
       file: group-backup.yml
 
-  - name: Backup users
+  # - name: Backup users
