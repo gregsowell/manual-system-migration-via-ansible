@@ -29,10 +29,18 @@
 #     dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group"
 #   delegate_to: "{{ backup_storage }}"
 
+# - name: Synchronization using rsync protocol 
+#   ansible.posix.synchronize:
+#     mode: pull
+# #    src: rsync://tmp/group_backup.yml
+#     src: /tmp/group_backup.yml
+#     dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group.yml"
+#   delegate_to: "{{ backup_storage }}"
+
 - name: Synchronization using rsync protocol 
   ansible.posix.synchronize:
-    mode: pull
+    mode: push
 #    src: rsync://tmp/group_backup.yml
-    src: /tmp/group_backup.yml
-    dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group.yml"
+    dest: /tmp/group_backup.yml
+    src: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group.yml"
   delegate_to: "{{ backup_storage }}"
