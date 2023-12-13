@@ -18,6 +18,7 @@
   register: group_backup
 
 - name: debug group_backup
+  ansible.builtin.debug:
     var: group_backup.stdout_lines | to_nice_yaml | regex_replace('^.{3}','')
 
 - name: Save group info to backup server
