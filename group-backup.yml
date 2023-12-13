@@ -14,7 +14,6 @@
     split($4, members, ","); 
     printf "   members: [";
     for (i in members) {printf "\"%s\"", members[i]; if (i < length(members)) printf ", "};
-    # printf "]\n"}' /etc/group > group_backup.yml
     printf "]\n"}' /etc/group
   register: group_backup
 
