@@ -17,14 +17,14 @@
     printf "]\n"}' /etc/group
   register: group_backup
 
-- name: debug group_backup
-  ansible.builtin.debug:
-    var: group_backup.stdout_lines | to_nice_yaml | regex_replace('^.{3}','')
+# - name: debug group_backup
+#   ansible.builtin.debug:
+#     var: group_backup.stdout_lines | to_nice_yaml | regex_replace('^.{3}','')
 
 - name: Save group info to backup server
   ansible.builtin.copy:
     # content: "{{ group_backup.stdout_lines | to_nice_yaml | regex_replace('-(.{3})','') }}"
     # content: "{{ group_backup.stdout | to_nice_yaml }}"
-    content: "{{ group_backup.stdout_lines | to_nice_yaml | regex_replace('^.{3}','') }}"
+    content: "{{ group_backup.stdout_lines | to_nice_yaml | regex_replace(\"- '\",'') }}"
     dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group"
   delegate_to: "{{ backup_storage }}"
