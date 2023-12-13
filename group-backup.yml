@@ -17,6 +17,9 @@
     printf "]\n"}' /etc/group
   register: group_backup
 
+- name: debug group_backup
+    var: group_backup.stdout_lines | to_nice_yaml | regex_replace('^.{3}','')
+
 - name: Save group info to backup server
   ansible.builtin.copy:
     # content: "{{ group_backup.stdout_lines | to_nice_yaml | regex_replace('-(.{3})','') }}"
