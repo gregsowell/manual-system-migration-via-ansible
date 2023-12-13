@@ -32,6 +32,7 @@
 - name: Synchronization using rsync protocol 
   ansible.posix.synchronize:
     mode: pull
-    src: rsync://tmp/group_backup.yml
+#    src: rsync://tmp/group_backup.yml
+    src: /tmp/group_backup.yml
     dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group.yml"
   delegate_to: "{{ backup_storage }}"
