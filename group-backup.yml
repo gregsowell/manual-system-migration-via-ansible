@@ -25,6 +25,6 @@
   ansible.builtin.copy:
     # content: "{{ group_backup.stdout_lines | to_nice_yaml | regex_replace('-(.{3})','') }}"
     # content: "{{ group_backup.stdout | to_nice_yaml }}"
-    content: "{{ group_backup.stdout_lines | to_nice_yaml | regex_replace(\"- ' \",'') }}"
+    content: "{{ group_backup.stdout_lines | to_nice_yaml | regex_replace(\"- ' \",'') | regex_replace(\"'$\",'') }}"
     dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group"
   delegate_to: "{{ backup_storage }}"
