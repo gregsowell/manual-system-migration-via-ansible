@@ -14,10 +14,12 @@
     split($4, members, ","); 
     printf "   members: [";
     for (i in members) {printf "\"%s\"", members[i]; if (i < length(members)) printf ", "};
-    printf "]\n"}' /etc/group > group_backup.yml
+    # printf "]\n"}' /etc/group > group_backup.yml
+    printf "]\n"}' /etc/group
   register: group_backup
 
 - name: Save group info to backup server
   ansible.builtin.copy:
     content: "{{ group_backup.stdout }}"
     dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group"
+  delegate_to: "{{ backup_storage }}"
