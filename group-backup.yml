@@ -2,10 +2,11 @@
 - name: Create an export list of Groups
   # Backup to file command awk -F':' '{print " - name: " $1 "\n   gid: " $3 "\n   members: [" $4 "]"}' /etc/group > group_backup.yml
   # ansible.builtin.shell: awk -F':' '{print " - name: " $1 "\n   gid: " $3 "\n   members: [" $4 "]"}' /etc/group
-  ansible.builtin.shell: "{{ shell_command }}"
+  ansible.builtin.shell: awk -F':' '{print " - name\: " $1 "\n   gid\: " $3 "\n   members\: [" $4 "]"}' /etc/group
+  # ansible.builtin.shell: "{{ shell_command }}"
   register: group_backup
-  vars:
-    shell_command: !unsafe awk -F':' '{print " - name: " $1 "\n   gid: " $3 "\n   members: [" $4 "]"}' /etc/group
+  # vars:
+  #   shell_command: !unsafe awk -F':' '{print " - name: " $1 "\n   gid: " $3 "\n   members: [" $4 "]"}' /etc/group
 
 - name: Save group info to backup server
   ansible.builtin.copy:
