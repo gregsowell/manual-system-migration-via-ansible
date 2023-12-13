@@ -1,0 +1,23 @@
+---
+- name: Discover/backup hosts to be migrated
+  hosts: migration-hosts
+  gather_facts: false
+  vars:
+    # The host to store backup info to
+    backup_storage: backup-storage
+
+    # The location on the backup host to store info
+    backup_location: /tmp/migration
+  tasks:
+  - name: Create backup directory on backup server
+    ansible.builtin.file:
+      path: "{{ backup_location }}"
+      state: directory
+      mode: '0755'
+    delegate_to: "{{ backup_storage }}"
+
+  - name: Backup groups
+    ansible.builtin.include_tasks:
+      file: group-backup.yml
+
+  - name: Backup users

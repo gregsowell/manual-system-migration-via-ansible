@@ -1,0 +1,7 @@
+# Task file for backing up groups
+- name: Create an export list of Groups
+  # Backup to file command awk -F':' '{print " - name: " $1 "\n   gid: " $3 "\n   members: [" $4 "]"}' /etc/group > group_backup.yml
+  ansible.builtin.shell: awk -F':' '{print " - name: " $1 "\n   gid: " $3 "\n   members: [" $4 "]"}' /etc/group
+  register: group_backup
+
+- name: Save group info to backup server
