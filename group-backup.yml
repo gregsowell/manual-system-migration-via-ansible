@@ -14,17 +14,24 @@
     split($4, members, ","); 
     printf "   members: [";
     for (i in members) {printf "\"%s\"", members[i]; if (i < length(members)) printf ", "};
-    printf "]\n"}' /etc/group
-  register: group_backup
+    printf "]\n"}' /etc/group > /tmp/group_backup.yml
+  # register: group_backup
 
 # - name: debug group_backup
 #   ansible.builtin.debug:
 #     var: group_backup.stdout_lines | to_nice_yaml | regex_replace('^.{3}','')
 
-- name: Save group info to backup server
-  ansible.builtin.copy:
-    # content: "{{ group_backup.stdout_lines | to_nice_yaml | regex_replace('-(.{3})','') }}"
-    # content: "{{ group_backup.stdout | to_nice_yaml }}"
-    content: "{{ group_backup.stdout_lines | to_nice_yaml | regex_replace(\"- ' \",'') | regex_replace(\"'\$\",'') }}"
-    dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group"
+# - name: Save group info to backup server
+#   ansible.builtin.copy:
+#     # content: "{{ group_backup.stdout_lines | to_nice_yaml | regex_replace('-(.{3})','') }}"
+#     # content: "{{ group_backup.stdout | to_nice_yaml }}"
+#     content: "{{ group_backup.stdout_lines | to_nice_yaml | regex_replace(\"- ' \",'') | regex_replace(\"'\$\",'') }}"
+#     dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group"
+#   delegate_to: "{{ backup_storage }}"
+
+- name: Synchronization using rsync protocol 
+  ansible.posix.synchronize:
+    mode: pull
+    src: rsync://tmp/group_backup.yml
+    dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group.yml"
   delegate_to: "{{ backup_storage }}"
