@@ -4,19 +4,19 @@
 - name: Create an archive of the config files
   community.general.archive:
     path: /etc/httpd/con*
-    dest: "/tmp/{{ inventory_hostname }}-http.tgz"
+    dest: "/tmp/{{ inventory_hostname }}-httpd.tgz"
 
 - name: Copy apache config files to ansible server
   ansible.builtin.fetch:
-    src: "/tmp/{{ inventory_hostname }}-http.tgz"
-    dest: "/tmp/{{ inventory_hostname }}-http.tgz"
+    src: "/tmp/{{ inventory_hostname }}-httpd.tgz"
+    dest: "/tmp/{{ inventory_hostname }}-httpd.tgz"
     flat: true # Changes default fetch so it will save directly in destination
 
 # place config files on backup server
 - name: Copy config archive to backup server from local ansible server
   ansible.builtin.copy:
-    src: "/tmp/{{ inventory_hostname }}-http.tgz"
-    dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-http.tgz"
+    src: "/tmp/{{ inventory_hostname }}-httpd.tgz"
+    dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-httpd.tgz"
   delegate_to: "{{ backup_storage }}"
 
 # backup data folders located in config files
