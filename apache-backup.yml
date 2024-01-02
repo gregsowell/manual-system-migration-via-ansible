@@ -1,0 +1,23 @@
+# Task file for backing up apache
+
+# backup apache config files
+- name: Create an archive of the config files
+  community.general.archive:
+    path: /etc/httpd/con*
+    dest: "/tmp/{{ inventory_hostname }}-http.tgz"
+
+- name: Copy apache config files to ansible server
+  ansible.builtin.fetch:
+    src: "/tmp/{{ inventory_hostname }}-http.tgz"
+    dest: "/tmp/{{ inventory_hostname }}-http.tgz"
+
+# place config files on backup server
+- name: Copy config archive to backup server from local ansible server
+  ansible.builtin.copy:
+    src: "/tmp/{{ inventory_hostname }}-http.tgz"
+    dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-group.yml"
+  delegate_to: "{{ backup_storage }}"
+
+# backup data folders located in config files
+# place data folders on backup server
+

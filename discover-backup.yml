@@ -16,8 +16,10 @@
       mode: '0733'
     delegate_to: "{{ backup_storage }}"
 
-  - name: Backup groups
-    ansible.builtin.include_tasks:
-      file: group-backup.yml
+  # - name: Backup groups
+  #   ansible.builtin.include_tasks:
+  #     file: group-backup.yml
 
-  # - name: Backup users
+  - name: Backup Apache
+    ansible.builtin.include_tasks:
+      file: apache-backup.yml 
