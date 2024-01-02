@@ -22,3 +22,21 @@
 # backup data folders located in config files
 # place data folders on backup server
 
+# backup apache config files
+- name: Create an archive of the data directories
+  community.general.archive:
+    path: /var/www
+    dest: "/tmp/{{ inventory_hostname }}-httpd-data.tgz"
+
+- name: Copy apache data files to ansible server
+  ansible.builtin.fetch:
+    src: "/tmp/{{ inventory_hostname }}-httpd-data.tgz"
+    dest: "/tmp/{{ inventory_hostname }}-httpd-data.tgz"
+    flat: true # Changes default fetch so it will save directly in destination
+
+# place config files on backup server
+- name: Copy data archive to backup server from local ansible server
+  ansible.builtin.copy:
+    src: "/tmp/{{ inventory_hostname }}-httpd-data.tgz"
+    dest: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-httpd-data.tgz"
+  delegate_to: "{{ backup_storage }}"
