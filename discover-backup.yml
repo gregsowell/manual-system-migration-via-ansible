@@ -9,31 +9,20 @@
     # The location on the backup host to store info
     backup_location: /tmp/migration
   tasks:
-  # - name: Gather package facts
-  #   ansible.builtin.setup:
-  #     gather_subset:
-  #       - 'all'
-  #       # - '!all'
-  #       # - min
-  #       # - packages
-
-  # - name: Debug gathered gather_facts
-  #   ansible.builtin.debug:
-  #     var: ansible_facts
   - name: Execute rpm to get list of installed packages
-    command: rpm -qa --qf "%{NAME} %{VERSION}-%{RELEASE}\n"
+    ansible.builtin.command: rpm -qa --qf "%{NAME} %{VERSION}-%{RELEASE}\n"
     register: rpm_query
 
-  - name: Show the result
-    debug:
-      var: rpm_query.stdout_lines
+  # - name: Show the result
+  #   debug:
+  #     var: rpm_query.stdout_lines
 
   - name: Populate service facts
     ansible.builtin.service_facts:
 
-  - name: Print service facts
-    ansible.builtin.debug:
-      var: ansible_facts.services
+  # - name: Print service facts
+  #   ansible.builtin.debug:
+  #     var: ansible_facts.services
 
   - name: Create backup directory on backup server - unique for each host
     ansible.builtin.file:
@@ -47,5 +36,8 @@
   #     file: group-backup.yml
 
   - name: Backup Apache
+  # aap_conf_out.json.name is search('already exists')
+    when: item is search('httpd ')
     ansible.builtin.include_tasks:
       file: apache-backup.yml 
+    loop: "{{ rpm_query.stdout_lines }}"
