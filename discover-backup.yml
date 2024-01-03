@@ -20,6 +20,13 @@
   # - name: Debug gathered gather_facts
   #   ansible.builtin.debug:
   #     var: ansible_facts
+  - name: Execute rpm to get list of installed packages
+    command: rpm -qa --qf "%{NAME} %{VERSION}-%{RELEASE}\n"
+    register: rpm_query
+
+  - name: Show the result
+    debug:
+      var: rpm_query.stdout_lines
 
   - name: Populate service facts
     ansible.builtin.service_facts:
