@@ -30,12 +30,13 @@
   # - name: Backup groups
   #   ansible.builtin.include_tasks:
   #     file: group-backup.yml
-  - name: Debug test
-    ansible.builtin.debug:
-      var: ansible_facts.services['httpd.service'].status
+
+  # - name: Debug test
+  #   ansible.builtin.debug:
+  #     var: ansible_facts.services['httpd.service'].status
 
   - name: Backup Apache when httpd is installed
-    when: item is search('httpd ') # and ansible_facts.services['httpd.service'].status == 'enabled'
+    when: item is search('httpd ') and ansible_facts.services['httpd.service'].status == 'enabled'
     ansible.builtin.include_tasks:
       file: apache-backup.yml 
     loop: "{{ rpm_query.stdout_lines }}"
