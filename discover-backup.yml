@@ -9,17 +9,24 @@
     # The location on the backup host to store info
     backup_location: /tmp/migration
   tasks:
-  - name: Gather package facts
-    ansible.builtin.setup:
-      gather_subset:
-        - 'all'
-        # - '!all'
-        # - min
-        # - packages
+  # - name: Gather package facts
+  #   ansible.builtin.setup:
+  #     gather_subset:
+  #       - 'all'
+  #       # - '!all'
+  #       # - min
+  #       # - packages
 
-  - name: Debug gathered gather_facts
+  # - name: Debug gathered gather_facts
+  #   ansible.builtin.debug:
+  #     var: ansible_facts
+
+  - name: Populate service facts
+    ansible.builtin.service_facts:
+
+  - name: Print service facts
     ansible.builtin.debug:
-      var: ansible_facts
+      var: ansible_facts.services
 
   - name: Create backup directory on backup server - unique for each host
     ansible.builtin.file:
