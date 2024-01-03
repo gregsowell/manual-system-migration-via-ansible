@@ -19,7 +19,9 @@
     register: config_files
 
   - name: Debug config_files
+    when: item is search(inventory_hostname + '-httpd.tgz')
     ansible.builtin.debug:
       var: config_files
+    loop: "{{ config_files.files.path }}"
 
   # for each task type, loop through backup files and see if they exist - call restore task file
