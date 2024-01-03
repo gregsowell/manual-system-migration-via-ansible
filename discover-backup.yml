@@ -1,7 +1,7 @@
 ---
 - name: Discover/backup hosts to be migrated
   hosts: migration-hosts
-#  gather_facts: false
+  gather_facts: false
   vars:
     # The host to store backup info to
     backup_storage: backup-storage
@@ -9,10 +9,17 @@
     # The location on the backup host to store info
     backup_location: /tmp/migration
   tasks:
+  - name: Gather package facts
+    ansible.builtin.setup:
+      gather_subset:
+        - '!all'
+        - min
+        - packages
+
   - name: Debug gathered gather_facts
     ansible.builtin.debug:
       var: ansible_facts
-      
+
   - name: Create backup directory on backup server - unique for each host
     ansible.builtin.file:
       path: "{{ backup_location }}/{{ inventory_hostname }}"
