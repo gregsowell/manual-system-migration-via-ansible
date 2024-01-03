@@ -3,6 +3,9 @@
   hosts: migration-hosts # Greg-rocky9-2
   gather_facts: false
   vars:
+    # The host to store backup info to
+    backup_storage: backup-storage
+
     # The location on the backup host to store info
     backup_location: /tmp/migration
 
@@ -12,6 +15,7 @@
     ansible.builtin.find:
       paths: "{{ backup_location }}/{{ inventory_hostname }}"
 #      recurse: yes
+    delegate_to: "{{ backup_storage }}"
     register: config_files
 
   - name: Debug config_files
