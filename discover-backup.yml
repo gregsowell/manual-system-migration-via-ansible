@@ -13,11 +13,7 @@
     ansible.builtin.command: rpm -qa --qf "%{NAME} %{VERSION}-%{RELEASE}\n"
     register: rpm_query
 
-  # - name: Show the result
-  #   debug:
-  #     var: rpm_query.stdout_lines
-
-  - name: Populate service facts
+  - name: Populate service facts - look for running services
     ansible.builtin.service_facts:
 
   # - name: Print service facts
@@ -34,10 +30,12 @@
   # - name: Backup groups
   #   ansible.builtin.include_tasks:
   #     file: group-backup.yml
+  - name: Debug test
+    ansible.builtin.debug:
+      var: ansible_facts.services['httpd.service'].status
 
-  - name: Backup Apache
-  # aap_conf_out.json.name is search('already exists')
-    when: item is search('httpd ')
+  - name: Backup Apache when httpd is installed
+    when: item is search('httpd ') # and ansible_facts.services['httpd.service'].status == 'enabled'
     ansible.builtin.include_tasks:
       file: apache-backup.yml 
     loop: "{{ rpm_query.stdout_lines }}"
