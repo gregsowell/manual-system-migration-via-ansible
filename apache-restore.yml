@@ -5,6 +5,7 @@
   ansible.builtin.dnf:
     name: httpd
     state: latest
+  delegate_to: "{{ restore_server }}"
 
 - name: Copy apache config files to ansible server
   ansible.builtin.fetch:
