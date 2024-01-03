@@ -1,0 +1,54 @@
+# Task file for installing and configuring apache
+
+# Install apache
+- name: Install apache
+  ansible.builtin.dnf:
+    name: httpd
+    state: latest
+
+- name: Copy apache config files to ansible server
+  ansible.builtin.fetch:
+    src: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-httpd.tgz"
+    dest: "/tmp/{{ inventory_hostname }}-httpd.tgz"
+    flat: true # Changes default fetch so it will save directly in destination
+  delegate_to: "{{ backup_storage }}"
+
+- name: Copy config archive to new server from local ansible server
+  ansible.builtin.copy:
+    src: "/tmp/{{ inventory_hostname }}-httpd.tgz"
+    dest: "/tmp/{{ inventory_hostname }}-httpd.tgz"
+  delegate_to: "{{ restore_server }}"
+
+- name: Extract config archive
+  ansible.builtin.unarchive:
+    src: "/tmp/{{ inventory_hostname }}-httpd.tgz"
+    dest: /etc/httpd
+    remote_src: true
+  delegate_to: "{{ restore_server }}"
+
+- name: Copy apache data files to ansible server
+  ansible.builtin.fetch:
+    src: "{{ backup_location }}/{{ inventory_hostname }}/{{ inventory_hostname }}-httpd-data.tgz"
+    dest: "/tmp/{{ inventory_hostname }}-httpd-data.tgz"
+    flat: true # Changes default fetch so it will save directly in destination
+  delegate_to: "{{ backup_storage }}"
+
+- name: Copy data archive to new server from local ansible server
+  ansible.builtin.copy:
+    src: "/tmp/{{ inventory_hostname }}-httpd-data.tgz"
+    dest: "/tmp/{{ inventory_hostname }}-httpd-data.tgz"
+  delegate_to: "{{ restore_server }}"
+
+- name: Extract config archive
+  ansible.builtin.unarchive:
+    src: "/tmp/{{ inventory_hostname }}-httpd-data.tgz"
+    dest: /var/www
+    remote_src: true
+  delegate_to: "{{ restore_server }}"
+
+- name: Start service httpd and enable it on boot
+  ansible.builtin.service:
+    name: httpd
+    state: started
+    enabled: yes
+  delegate_to: "{{ restore_server }}"

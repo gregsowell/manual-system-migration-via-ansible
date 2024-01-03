@@ -3,6 +3,9 @@
   hosts: migration-hosts # Greg-rocky9-2
   gather_facts: false
   vars:
+    # Server restoring configs to
+    restore_server: Greg-rocky9-2
+    
     # The host to store backup info to
     backup_storage: backup-storage
 
@@ -18,10 +21,15 @@
     delegate_to: "{{ backup_storage }}"
     register: config_files
 
-  - name: Debug config_files
-    when: item.path is search(inventory_hostname + '-httpd.tgz')
-    ansible.builtin.debug:
-      var: config_files
-    loop: "{{ config_files.files }}"
+  # - name: Debug config_files
+  #   when: item.path is search(inventory_hostname + '-httpd.tgz')
+  #   ansible.builtin.debug:
+  #     var: config_files
+  #   loop: "{{ config_files.files }}"
 
   # for each task type, loop through backup files and see if they exist - call restore task file
+  - name: If apache is installed, call install task file
+    when: item.path is search(inventory_hostname + '-httpd.tgz')
+    ansible.builtin.include_tasks: 
+      file: apache-restore.yml
+    loop: "{{ config_files.files }}"
