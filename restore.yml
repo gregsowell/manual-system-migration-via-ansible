@@ -1,0 +1,21 @@
+---
+- name: Playbook to restore configs on new servers
+  hosts: migration-hosts # Greg-rocky9-2
+  gather_facts: false
+  vars:
+    # The location on the backup host to store info
+    backup_location: /tmp/migration
+
+  tasks:
+  # grab a list of the files on the backup server for this host
+  - name: Find all files in hosts' backup directories
+    ansible.builtin.find:
+      paths: "{{ backup_location }}/{{ inventory_hostname }}"
+#      recurse: yes
+    register: config_files
+
+  - name: Debug config_files
+    ansible.builtin.debug:
+      var: config_files
+
+  # for each task type, loop through backup files and see if they exist - call restore task file
