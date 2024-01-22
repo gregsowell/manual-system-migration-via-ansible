@@ -4,7 +4,7 @@
   gather_facts: false
   vars:
     # Server restoring configs to
-    restore_server: Greg-rocky9-2
+    # restore_server: Greg-rocky9-2
     
     # The host to store backup info to
     backup_storage: backup-storage
@@ -13,6 +13,10 @@
     backup_location: /tmp/migration
 
   tasks:
+  - name: Set the restore server variables
+    ansible.builtin.set_fact:
+      restore_server: "new-{{ inventory_hostname }}"
+      
   # grab a list of the files on the backup server for this host
   - name: Find all files in hosts' backup directories
     ansible.builtin.find:
