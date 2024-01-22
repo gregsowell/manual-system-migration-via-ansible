@@ -16,6 +16,10 @@
   - name: Set the restore server variables
     ansible.builtin.set_fact:
       restore_server: "new-{{ inventory_hostname }}"
+
+  - name: Debug restore_server:
+    ansible.builtin.debug:
+      var: restore_server
       
   # grab a list of the files on the backup server for this host
   - name: Find all files in hosts' backup directories
