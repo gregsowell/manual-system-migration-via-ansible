@@ -27,6 +27,9 @@
       hostname: "{{ vcenter_hostname }}"
       username: "{{ vcenter_username }}"
       password: "{{ vcenter_password }}"
+      validate_certs: no
+      folder: "{{ vm_folder }}"
+      datacenter: "{{ vm_datacenter }}"
       name: "{{ inventory_hostname }}"
       state: suspended
     delegate_to: localhost
