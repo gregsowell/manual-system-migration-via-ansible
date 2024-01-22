@@ -34,49 +34,49 @@
   tasks:
   # Check if new VM already exists; if it does, kill the automation
   # Clone template to create new VM with name based on old name
-  - name: connect to vcenter and do a basic provisioning
-#    when: vm_ip != "ddi"
-    block:
-      - name: connect to vcenter and do a basic provisioning
-        community.vmware.vmware_guest:
-          hostname: "{{ vcenter_hostname }}"
-          username: "{{ vcenter_username }}"
-          password: "{{ vcenter_password }}"
-          validate_certs: no
-          folder: "{{ vm_folder }}"
-          #name: "{{ vm_name }}"
-          name: "new-{{ inventory_hostname }}"
-          datacenter: "{{ vm_datacenter }}"
-          state: poweredon
-#      guest_id: centos64Guest
-          template: "{{ vm_template }}"
-      # This is hostname of particular ESXi server on which user wants VM to be deployed
-          disk:
-          - size_gb: "{{ vm_disksize }}"
-            type: thin
-            datastore: "{{ vm_datastore }}"
-          hardware:
-            memory_mb: "{{ vm_memory }}"
-            num_cpus: "{{ vm_cpus}}"
-            scsi: paravirtual
-          networks:
-          - name: "{{ vm_netname}}"
-            connected: true
-            start_connected: true
-            # type: static
-#        mac: aa:bb:dd:aa:00:14
-            # ip: "{{ vm_ip }}"
-            # netmask: "{{ vm_netmask }}"
-            # gateway: "{{ vm_gateway }}"
-            # dns_servers: "{{ vm_gateway }}"
-          wait_for_ip_address: true
-#        device_type: vmxnet3
-        register: deploy_vm
-        delegate_to: localhost
+#   - name: connect to vcenter and do a basic provisioning
+# #    when: vm_ip != "ddi"
+#     block:
+#       - name: connect to vcenter and do a basic provisioning
+#         community.vmware.vmware_guest:
+#           hostname: "{{ vcenter_hostname }}"
+#           username: "{{ vcenter_username }}"
+#           password: "{{ vcenter_password }}"
+#           validate_certs: no
+#           folder: "{{ vm_folder }}"
+#           #name: "{{ vm_name }}"
+#           name: "new-{{ inventory_hostname }}"
+#           datacenter: "{{ vm_datacenter }}"
+#           state: poweredon
+# #      guest_id: centos64Guest
+#           template: "{{ vm_template }}"
+#       # This is hostname of particular ESXi server on which user wants VM to be deployed
+#           disk:
+#           - size_gb: "{{ vm_disksize }}"
+#             type: thin
+#             datastore: "{{ vm_datastore }}"
+#           hardware:
+#             memory_mb: "{{ vm_memory }}"
+#             num_cpus: "{{ vm_cpus}}"
+#             scsi: paravirtual
+#           networks:
+#           - name: "{{ vm_netname}}"
+#             connected: true
+#             start_connected: true
+#             # type: static
+# #        mac: aa:bb:dd:aa:00:14
+#             # ip: "{{ vm_ip }}"
+#             # netmask: "{{ vm_netmask }}"
+#             # gateway: "{{ vm_gateway }}"
+#             # dns_servers: "{{ vm_gateway }}"
+#           wait_for_ip_address: true
+# #        device_type: vmxnet3
+#         register: deploy_vm
+#         delegate_to: localhost
 
-  - name: debug deploy_vm
-    ansible.builtin.debug:
-      var: deploy_vm
+  # - name: debug deploy_vm
+  #   ansible.builtin.debug:
+  #     var: deploy_vm
 
       # - name: set IP as stat for workflow
       #   ansible.builtin.set_stats:
@@ -89,7 +89,7 @@
       username: '{{ vcenter_username }}'
       password: '{{ vcenter_password }}'
       validate_certs: no
-      datacenter: '{{ datacenter_name }}'
+      datacenter: '{{ vm_datacenter }}'
       name: "new-{{ inventory_hostname }}"
     delegate_to: localhost
     register: vm_info
