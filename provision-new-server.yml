@@ -65,10 +65,10 @@
             start_connected: true
             type: static
 #        mac: aa:bb:dd:aa:00:14
-            ip: "{{ vm_ip }}"
-            netmask: "{{ vm_netmask }}"
-            gateway: "{{ vm_gateway }}"
-            dns_servers: "{{ vm_gateway }}"
+            # ip: "{{ vm_ip }}"
+            # netmask: "{{ vm_netmask }}"
+            # gateway: "{{ vm_gateway }}"
+            # dns_servers: "{{ vm_gateway }}"
           wait_for_ip_address: true
 #        device_type: vmxnet3
         register: deploy_vm
