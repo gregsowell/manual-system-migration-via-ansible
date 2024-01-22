@@ -90,7 +90,8 @@
         #name: "{{ new_host_name }}"
         name: "new-{{ inventory_hostname }}"
         #variables: "{{ new_host_variables }}"
-        variables: !unsafe "ansible_hostname: {{ vm_ip }}"
+        #variables: !unsafe "ansible_hostname: {{ vm_ip }}"
+        variables: "ansible_hostname: {{ vm_ip }}"
       validate_certs: no
       headers:
         Content-Type: "application/json"
