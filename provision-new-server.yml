@@ -27,7 +27,7 @@
     ascender_host: "ascender.example.com"
     ascender_username: "{{ gen2_user }}"
     ascender_password: "{{ gen2_pword }}"
-    inventory_name: "generic inventory"
+    inventory_name: "Manual Migration Inventory"
     # new_host_name: "newhost.example.com"
     # new_host_variables:
     #   ansible_host: "192.168.1.100"
