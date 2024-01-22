@@ -113,7 +113,7 @@
         #variables: !unsafe "ansible_hostname: {{ vm_ip }}"
         #variables: "ansible_hostname: {{ vm_ip }}"
         #variables: "ansible_hostname: {{ vm_info.instance.hw_eth0.ip_addresses[0] }}"
-        variables: "ansible_hostname: {{ vm_info.instance.ipv4 }}"
+        variables: "ansible_host: {{ vm_info.instance.ipv4 }}"
       validate_certs: no
       headers:
         Content-Type: "application/json"
