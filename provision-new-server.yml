@@ -64,6 +64,7 @@
 #             connected: true
 #             start_connected: true
 #             # type: static
+#             type: dhcp
 # #        mac: aa:bb:dd:aa:00:14
 #             # ip: "{{ vm_ip }}"
 #             # netmask: "{{ vm_netmask }}"
@@ -96,7 +97,8 @@
 
   - name: Display VM IP Address
     debug:
-      msg: "The IP Address of the VM is {{ vm_info['guest_info']['network'][0]['ip_address'] }}"
+      #msg: "The IP Address of the VM is {{ vm_info['guest_info']['network'][0]['ip_address'] }}"
+      var: vm_info
 
   # Add that IP and new host name to inventory
   - name: Add new host to ascender inventory
