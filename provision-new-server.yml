@@ -1,0 +1,106 @@
+---
+- name: Provision a new server in VMWare
+  hosts: migration-hosts
+  gather_facts: false
+  vars:
+    # vcenter variables should be passed in at run time.  I'm using a custom credential in tower.
+#    vcenter_hostname: 10.1.2.3
+    vcenter_username: "{{ gen1_user }}"
+    vcenter_password: "{{ gen1_pword }}"
+
+    # below are all of the details for the VM.  I'm overriding these at runtime.
+    vm_datacenter: MNS
+    vm_name: snowtest2
+    vm_template: Rocky9
+    vm_folder: /Greg/ciq
+    vm_disksize: 50
+    vm_datastore: SSD
+    # minimum of 4GB of RAM
+    vm_memory: 4096
+    vm_cpus: 4
+    vm_netname: Greg
+    vm_ip: 10.1.12.56
+#    vm_netmask: 255.255.255.0
+#    vm_gateway: 10.1.12.1    
+
+    # Here are the variables for use with connecting to Ascender
+    ascender_host: "ascender.example.com"
+    ascender_username: "{{ gen2_user }}"
+    ascender_password: "{{ gen2_pword }}"
+    inventory_name: "generic inventory"
+    # new_host_name: "newhost.example.com"
+    # new_host_variables:
+    #   ansible_host: "192.168.1.100"
+  tasks:
+  # Check if new VM already exists; if it does, kill the automation
+  # Clone template to create new VM with name based on old name
+#   - name: connect to vcenter and do a basic provisioning
+# #    when: vm_ip != "ddi"
+#     block:
+#       - name: connect to vcenter and do a basic provisioning
+#         community.vmware.vmware_guest:
+#           hostname: "{{ vcenter_hostname }}"
+#           username: "{{ vcenter_username }}"
+#           password: "{{ vcenter_password }}"
+#           validate_certs: no
+#           folder: "{{ vm_folder }}"
+#           #name: "{{ vm_name }}"
+#           name: "new-{{ inventory_hostname }}"
+#           datacenter: "{{ vm_datacenter }}"
+#           state: poweredon
+# #      guest_id: centos64Guest
+#           template: "{{ vm_template }}"
+#       # This is hostname of particular ESXi server on which user wants VM to be deployed
+#           disk:
+#           - size_gb: "{{ vm_disksize }}"
+#             type: thin
+#             datastore: "{{ vm_datastore }}"
+#           hardware:
+#             memory_mb: "{{ vm_memory }}"
+#             num_cpus: "{{ vm_cpus}}"
+#             scsi: paravirtual
+#           networks:
+#           - name: "{{ vm_netname}}"
+#             connected: true
+#             start_connected: true
+#             type: static
+# #        mac: aa:bb:dd:aa:00:14
+#             ip: "{{ vm_ip }}"
+#             netmask: "{{ vm_netmask }}"
+#             gateway: "{{ vm_gateway }}"
+#             dns_servers: "{{ vm_gateway }}"
+#           wait_for_ip_address: true
+# #        device_type: vmxnet3
+#         register: deploy_vm
+#         delegate_to: localhost
+
+#       - name: set IP as stat for workflow
+#         ansible.builtin.set_stats:
+#           data:
+#             net_host: "{{ vm_ip }}"
+  
+
+  # Add that IP and new host name to inventory
+  - name: Add new host to ascender inventory
+    uri:
+      url: "https://{{ ascender_host }}/api/v2/inventories/{{ inventory_name | regex_replace('','\\%20') }}++Default/hosts/"
+      method: POST
+      body_format: json
+      body:
+        #name: "{{ new_host_name }}"
+        name: "new-{{ inventory_hostname }}"
+        #variables: "{{ new_host_variables }}"
+        variables: !unsafe "ansible_hostname: {{ vm_ip }}"
+      validate_certs: no
+      headers:
+        Content-Type: "application/json"
+      user: "{{ ascender_username }}"
+      password: "{{ ascender_password }}"
+      force_basic_auth: yes
+      status_code: 201
+    delegate_to: localhost
+    register: add_host_result
+
+  - name: Print API response
+    debug:
+      var: add_host_result.json
