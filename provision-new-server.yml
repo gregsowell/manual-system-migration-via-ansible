@@ -83,7 +83,7 @@
   # Add that IP and new host name to inventory
   - name: Add new host to ascender inventory
     uri:
-      url: "https://{{ ascender_host }}/api/v2/inventories/{{ inventory_name | regex_replace(' ','\\%20') }}++Default/hosts/"
+      url: "https://{{ ascender_host }}/api/v2/inventories/{{ inventory_name | regex_replace(' ','%20') }}++Default/hosts/"
       method: POST
       body_format: json
       body:
