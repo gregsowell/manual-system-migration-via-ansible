@@ -63,7 +63,7 @@
           - name: "{{ vm_netname}}"
             connected: true
             start_connected: true
-            type: static
+            # type: static
 #        mac: aa:bb:dd:aa:00:14
             # ip: "{{ vm_ip }}"
             # netmask: "{{ vm_netmask }}"
