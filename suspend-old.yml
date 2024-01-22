@@ -10,19 +10,10 @@
 
     # below are all of the details for the VM.  I'm overriding these at runtime.
     vm_datacenter: MNS
-    vm_name: snowtest2
-    vm_template: Rocky9
     vm_folder: /Greg/ciq
-    vm_disksize: 50
-    vm_datastore: SSD
-    # minimum of 4GB of RAM
-    vm_memory: 4096
-    vm_cpus: 4
-    vm_netname: Greg
-    vm_ip: 10.1.12.56
 
   tasks:
-  - name: Set powerstate of a virtual machine to poweroff by using UUID
+  - name: Suspend the old virtual machine
     community.vmware.vmware_guest:
       hostname: "{{ vcenter_hostname }}"
       username: "{{ vcenter_username }}"
