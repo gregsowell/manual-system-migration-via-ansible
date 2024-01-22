@@ -74,6 +74,10 @@
         register: deploy_vm
         delegate_to: localhost
 
+  - name: debug deploy_vm
+    ansible.builtin.debug:
+      var: deploy_vm
+
       # - name: set IP as stat for workflow
       #   ansible.builtin.set_stats:
       #     data:
