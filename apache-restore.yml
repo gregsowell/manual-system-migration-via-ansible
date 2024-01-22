@@ -1,5 +1,9 @@
 # Task file for installing and configuring apache
 
+- name: Debug restore_server
+  ansible.builtin.debug:
+    var: restore_server
+
 # Install apache
 - name: Install apache
   ansible.builtin.dnf:
