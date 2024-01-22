@@ -74,11 +74,25 @@
         register: deploy_vm
         delegate_to: localhost
 
-      - name: set IP as stat for workflow
-        ansible.builtin.set_stats:
-          data:
-            net_host: "{{ vm_ip }}"
+      # - name: set IP as stat for workflow
+      #   ansible.builtin.set_stats:
+      #     data:
+      #       net_host: "{{ vm_ip }}"
   
+  - name: Get VM info
+    community.vmware.vmware_guest_info:
+      hostname: '{{ vcenter_hostname }}'
+      username: '{{ vcenter_username }}'
+      password: '{{ vcenter_password }}'
+      validate_certs: no
+      datacenter: '{{ datacenter_name }}'
+      name: "new-{{ inventory_hostname }}"
+    delegate_to: localhost
+    register: vm_info
+
+  - name: Display VM IP Address
+    debug:
+      msg: "The IP Address of the VM is {{ vm_info['guest_info']['network'][0]['ip_address'] }}"
 
   # Add that IP and new host name to inventory
   - name: Add new host to ascender inventory
@@ -91,7 +105,8 @@
         name: "new-{{ inventory_hostname }}"
         #variables: "{{ new_host_variables }}"
         #variables: !unsafe "ansible_hostname: {{ vm_ip }}"
-        variables: "ansible_hostname: {{ vm_ip }}"
+        #variables: "ansible_hostname: {{ vm_ip }}"
+        variables: "ansible_hostname: {{ vm_info.guest_info.network[0].ip_address }}"
       validate_certs: no
       headers:
         Content-Type: "application/json"
