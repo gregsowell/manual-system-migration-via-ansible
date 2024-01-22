@@ -1,0 +1,32 @@
+---
+- name: Provision a new server in VMWare
+  hosts: migration-hosts
+  gather_facts: false
+  vars:
+    # vcenter variables should be passed in at run time.  I'm using a custom credential in tower.
+#    vcenter_hostname: 10.1.2.3
+    vcenter_username: "{{ gen1_user }}"
+    vcenter_password: "{{ gen1_pword }}"
+
+    # below are all of the details for the VM.  I'm overriding these at runtime.
+    vm_datacenter: MNS
+    vm_name: snowtest2
+    vm_template: Rocky9
+    vm_folder: /Greg/ciq
+    vm_disksize: 50
+    vm_datastore: SSD
+    # minimum of 4GB of RAM
+    vm_memory: 4096
+    vm_cpus: 4
+    vm_netname: Greg
+    vm_ip: 10.1.12.56
+
+  tasks:
+  - name: Set powerstate of a virtual machine to poweroff by using UUID
+    community.vmware.vmware_guest:
+      hostname: "{{ vcenter_hostname }}"
+      username: "{{ vcenter_username }}"
+      password: "{{ vcenter_password }}"
+      name: "{{ inventory_hostname }}"
+      state: suspended
+    delegate_to: localhost
